@@ -45,10 +45,10 @@ const Login = () => {
   //     });
   // };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    console.log("You have logged out");
-  };
+  // const logout = () => {
+  //   localStorage.removeItem("token");
+  //   console.log("You have logged out");
+  // };
 
   return (
     <div>
@@ -60,7 +60,7 @@ const Login = () => {
       </form>
       {/* <button onClick={checkIfLoggedIn}>See if you are logged in</button>
       <button onClick={checkToken}>check if token is stored</button> */}
-      <button onClick={logout}>Log Out</button>
+      
     </div>
   );
 };

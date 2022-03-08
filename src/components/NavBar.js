@@ -34,7 +34,7 @@ const NavBar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/calendar">
+              <Link to="/view-calendar">
                 <p>My Trips</p>
               </Link>
             </li>
@@ -44,7 +44,7 @@ const NavBar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/settings">
+              <Link to="/edit-user">
                 <p>Settings</p>
               </Link>
             </li>

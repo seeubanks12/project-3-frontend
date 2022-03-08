@@ -6,12 +6,13 @@ import GoogleMap from "./components/GoogleMap";
 import { Routes, Route } from "react-router-dom";
 // import UserPins from "./components/UserPins";
 import Calendar from "./components/Calendar";
-import PlanTrip from "./components/PlanTrip";
+import TripCard from "./components/TripCard";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
+import EditUser from "./components/EditUser";
 
-Modal.setAppElement('#root')
+Modal.setAppElement("#root");
 
 function App() {
   return (
@@ -22,8 +23,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile-page" element={<GoogleMap />} />
         {/* <Route path="/pins" element={<UserPins />} /> */}
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/plan-trip" element={<PlanTrip />} />
+        <Route path="/view-calendar" element={<Calendar />} />
+        <Route path="/plan-trip" element={<TripCard />} />
+        <Route path="/edit-user" element={<EditUser />} />
       </Routes>
     </div>
   );

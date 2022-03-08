@@ -33,11 +33,12 @@ export default function App() {
   const [selected, setSelected] = React.useState(null);
   const [newPlace, setNewPlace] = React.useState(null);
   // const [currentUsername, setCurrentUsername] = React.useState(myStorage.getItem("user"));
-  const [title, setTitle] = React.useState(null);
-  const [desc, setDesc] = React.useState(null);
-  const [star, setStar] = React.useState(0);
+  // const [title, setTitle] = React.useState(null);
+  // const [desc, setDesc] = React.useState(null);
+  // const [star, setStar] = React.useState(0);
 
   const onMapClick = React.useCallback((event) => {
+    console.log("here");
     setMarkers((current) => [
       ...current,
       {
@@ -56,21 +57,20 @@ export default function App() {
   if (loadError) return "Error loadingmaps";
   if (!isLoaded) return "Loading Maps...";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newPin = {
-      // username: currentUsername,
-      title,
-      desc,
-      rating: star,
-      lat: newPlace.lat,
-      long: newPlace.long,
-    }
-    .then ((results) => {
-      console.log("You created a new pin!", results.data);
-      // localeStorage.setItem(newPin, results.data)
-    })
-  }
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const newPin = {
+  //     // username: currentUsername,
+  //     title,
+  //     desc,
+  //     rating: star,
+  //     lat: newPlace.lat,
+  //     long: newPlace.long,
+  //   }.then((results) => {
+  //     console.log("You created a new pin!", results.data);
+  //     // localeStorage.setItem(newPin, results.data)
+  //   });
+  // };
 
   return (
     <div>
@@ -80,8 +80,17 @@ export default function App() {
         zoom={2.7}
         center={center}
         options={options}
-        onClick={onMapClick}
-        onLoad={onMapLoad}
+        onClick={(e) => {
+          setMarkers((current) => [
+            ...current,
+            {
+              lat: e.latLng.lat(),
+              lng: e.latLng.lng(),
+              time: new Date(),
+            },
+          ]);
+        }}
+        // onLoad={onMapLoad}
       >
         {markers.map((marker) => (
           <Marker
@@ -91,6 +100,7 @@ export default function App() {
               scaledSize: new window.google.maps.Size(30, 30),
               origin: new window.google.maps.Point(0, 0),
               anchor: new window.google.maps.Point(15, 15),
+              url: null,
             }}
             onClick={() => {
               setSelected(marker);
@@ -100,40 +110,18 @@ export default function App() {
 
         {selected ? (
           <InfoWindow
-              latitude={newPlace.lat}
-              longitude={newPlace.long}
-              closeButton={true}
-              closeOnClick={false}
-              onClose={() => setNewPlace(null)}
-              anchor="left"
-            >
-              <div>
-                <form onSubmit={handleSubmit}>
-                  <label>Title</label>
-                  <input
-                    placeholder="Enter a title"
-                    autoFocus
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                  <label>Description</label>
-                  <textarea
-                    placeholder="Say us something about this place."
-                    onChange={(e) => setDesc(e.target.value)}
-                  />
-                  <label>Rating</label>
-                  <select onChange={(e) => setStar(e.target.value)}>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                  <button type="submit" className="submitButton">
-                    Add Pin
-                  </button>
-                </form>
-              </div>
-            </InfoWindow>
+            position={{ lat: selected.lat, lng: selected.lng }}
+            onCloseClick={() => {
+              setSelected(null);
+            }}
+          >
+            <div>
+              <p>Title</p>
+              <p>Description</p>
+              <p>Location</p>
+              <p>Dates</p>
+            </div>
+          </InfoWindow>
         ) : null}
       </GoogleMap>
     </div>
