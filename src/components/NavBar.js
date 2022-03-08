@@ -10,7 +10,7 @@ const NavBar = () => {
   return (
     <div className="navbar navbar-expand-sm bg-light navbar-light py-1 fixed-top">
       <nav className="container">
-        <Link to="/" className="navbar-brand">
+        <Link to="/profile-page" className="navbar-brand">
           <img
             src={logo}
             alt="logo"
@@ -34,13 +34,18 @@ const NavBar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/trips">
+              <Link to="/calendar">
                 <p>My Trips</p>
               </Link>
             </li>
             <li className="nav-item">
               <Link to="/plan-trip">
                 <p>Plan a Trip</p>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/settings">
+                <p>Settings</p>
               </Link>
             </li>
             <li className="nav-item">

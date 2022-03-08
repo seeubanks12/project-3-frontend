@@ -1,14 +1,17 @@
 import "./App.css";
 import React from "react";
+import Modal from "react-modal";
 // import axios from "axios";
 import GoogleMap from "./components/GoogleMap";
 import { Routes, Route } from "react-router-dom";
 // import UserPins from "./components/UserPins";
-// import UserTrips from "./components/UserTrips";
-// import PlanTrip from "./components/PlanTrip";
+import Calendar from "./components/Calendar";
+import PlanTrip from "./components/PlanTrip";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
+
+Modal.setAppElement('#root')
 
 function App() {
   return (
@@ -18,9 +21,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile-page" element={<GoogleMap />} />
-        {/* <Route path="/pins" element={<UserPins />} />
-        <Route path="/trips" element={<UserTrips />} />
-        <Route path="/plan-trip" element={<PlanTrip />} /> */}
+        {/* <Route path="/pins" element={<UserPins />} /> */}
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/plan-trip" element={<PlanTrip />} />
       </Routes>
     </div>
   );
