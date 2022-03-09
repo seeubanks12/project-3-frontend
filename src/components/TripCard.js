@@ -5,7 +5,7 @@ import { Modal, Button } from "react-bootstrap";
 
 export default function TripCard(props) {
   function userDropdowns(users, guests) {
-    const mappedUsers = users.map((user) => {
+    const mappedUsers = users?.map((user) => {
       const selected = guests.find((guest) => guest === user._id)
         ? true
         : false;
@@ -73,11 +73,15 @@ export default function TripCard(props) {
               <input
                 type="date"
                 className="form-control"
+                placeholder="YYYY-MM-DD"
+                min="2022-01-01"
+                max="2100-01-01"
                 id="start"
                 value={props.start}
                 name="start"
                 onChange={props.handleInputChange}
               />
+              
               <p className="error">{props.errorStart}</p>
             </div>
             <div className="form-group">
@@ -86,6 +90,9 @@ export default function TripCard(props) {
                 type="date"
                 className="form-control"
                 id="end"
+                placeholder="YYYY-MM-DD"
+                min="2022-01-01"
+                max="2100-01-01"
                 value={props.end}
                 name="end"
                 onChange={props.handleInputChange}
@@ -118,7 +125,11 @@ export default function TripCard(props) {
           </div> */}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={props.delete} variant="danger" className="deleteEvent">
+          <Button
+            onClick={props.delete}
+            variant="danger"
+            className="deleteEvent"
+          >
             Delete Trip
           </Button>
           <Button onClick={props.save} variant="primary" className="saveEvent">

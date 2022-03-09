@@ -4,9 +4,15 @@ import { Modal, Button } from "react-bootstrap";
 
 export default function FormModal(props) {
   function userDropdowns(users, guests) {
-    const mappedUsers = users.map(user => {
-      const selected = guests.find(guest => guest === user._id) ? true: false;
-      return <option value={user._id} selected={selected}>{user.username}</option>;
+    const mappedUsers = users?.map((user) => {
+      const selected = guests.find((guest) => guest === user._id)
+        ? true
+        : false;
+      return (
+        <option value={user._id} selected={selected}>
+          {user.username}
+        </option>
+      );
     });
     return mappedUsers;
   }
@@ -20,7 +26,8 @@ export default function FormModal(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form {...props} autocomplete="off">
+          {/* <form {...props} autocomplete="off"> */}
+          <form autoComplete="off">
             <div className="form-group">
               <label htmlFor="title">Trip Name</label>
               <input
@@ -36,12 +43,16 @@ export default function FormModal(props) {
             </div>
 
             <div className="form-group">
-    <label htmlFor="exampleFormControlSelect2">Guests</label>
-    <select multiple className="form-control" id="exampleFormControlSelect2" onChange={props.handleGuestsChange}>
-    {userDropdowns(props.users, props.guests)}
-    </select>
-  </div>
-     
+              <label htmlFor="exampleFormControlSelect2">Guests</label>
+              <select
+                multiple
+                className="form-control"
+                id="exampleFormControlSelect2"
+                onChange={props.handleGuestsChange}
+              >
+                {userDropdowns(props.users, props.guests)}
+              </select>
+            </div>
 
             <div className="form-group">
               <label htmlFor="location">Location</label>
@@ -63,6 +74,7 @@ export default function FormModal(props) {
                 type="date"
                 className="form-control"
                 id="start"
+                placeholder="YYYY-MM-DD"
                 value={props.start}
                 name="start"
                 onChange={props.handleInputChange}
@@ -75,6 +87,7 @@ export default function FormModal(props) {
                 type="date"
                 className="form-control"
                 id="end"
+                placeholder="YYYY-MM-DD"
                 value={props.end}
                 name="end"
                 onChange={props.handleInputChange}

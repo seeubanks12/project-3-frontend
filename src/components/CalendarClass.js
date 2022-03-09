@@ -7,12 +7,11 @@ import TripForm from "./FormModal";
 import TripCard from "./TripCard";
 // import "./main.scss";
 import moment from "moment-timezone";
-import NavBar from "./NavBar"
 import { get, post } from "../http/service";
 import { useNavigate } from "react-router-dom";
 
-const Calendar = () => {
-  const [state, setState] = React.useState ( {
+class Calendar extends React.Component {
+  state = {
     calendarWeekends: true,
     eventSources: [],
     id: "",
@@ -30,21 +29,27 @@ const Calendar = () => {
     showCard: false,
     users: [],
     guests: [],
-  });
+  };
 
-  const navigate = useNavigate();
+  componentDidMount() {
+    this.refreshTrips();
+    // this.getAllUsers();
+  }
 
-  React.useEffect(() => {
-    refreshTrips();
-  }, []);
-
+  // get all users for guests list
+  // getAllUsers() {
+  //   axios.getAllUsers().then(resp => {
+  //     this.setState({
+  //       users: resp.data
+  //     });
+  //   });
+  // }
 
   // display trip on calendar
-  const refreshTrips = () => {
-    get("/api/trip/view-trip").then((resp) => {
-      setState({
-        ...state,
-        eventSources: resp.data[0].trip?.map((e) => {
+  refreshTrips() {
+    get("/api/trip/view-calendar").then((resp) => {
+      this.setState({
+        eventSources: resp.data[0]?.trip.map((e) => {
           let start = moment(e.start).tz("UTC").format("DD-MM-YYYY");
           let end = moment(e.end).tz("UTC").add(1, "days").format("DD-MM-YYYY");
           return {
@@ -55,44 +60,40 @@ const Calendar = () => {
         }),
       });
     });
-  };
+  }
 
-  const calendarComponentRef = React.createRef();
+  calendarComponentRef = React.createRef();
 
   // show trip card
-  const handleEventClick = (event) => {
+  handleEventClick = (event) => {
     // get the trip's id from database
-    setState({
-      ...state,
+    this.setState({
       showCard: "true",
     });
-    handleTrip(event.event.extendedProps._id);
+    this.handleTrip(event.event.extendedProps._id);
   };
 
   // trip's delete button
-  const handleDeleteClick = () => {
-    setState({
-      ...state,
+  handleDeleteClick = () => {
+    this.setState({
       showCard: false,
     });
-    handleDeleteTrip(state.id);
+    this.handleDeleteTrip(this.state.id);
   };
 
   // trip's save changes button
-  const handleUpdateClick = () => {
+  handleUpdateClick = () => {
     if (
-      state.title &&
-      state.start &&
-      state.end &&
-      state.description
+      this.state.title &&
+      this.state.start &&
+      this.state.end &&
+      this.state.description
     ) {
-      setState({
-        ...state,
+      this.setState({
         showCard: false,
       });
-      handleUpdateTrip(state.id);
-      setState({
-        ...state,
+      this.handleUpdateTrip(this.state.id);
+      this.setState({
         errorTitle: "",
         errorLocation: "",
         errorStart: "",
@@ -100,8 +101,7 @@ const Calendar = () => {
         errorDescription: "",
       });
     } else {
-      setState({
-        ...state,
+      this.setState({
         errorTitle: "*Please enter your trip name",
         errorLocation: "*Please enter your trip location",
         errorStart: "*Please enter the start date",
@@ -112,15 +112,14 @@ const Calendar = () => {
   };
 
   // get trip's data from database
-  const handleTrip = (id) => {
+  handleTrip = (id) => {
     get("/api/trip/view-trip")
       .then((res) => {
         const dateStart = res.data.start;
         const start = moment(dateStart).tz("UTC").format("YYYY-MM-DD");
         const dateEnd = res.data.end;
         const end = moment(dateEnd).tz("UTC").format("YYYY-MM-DD");
-        setState({
-          ...state,
+        this.setState({
           id: res.data._id,
           title: res.data.title,
           location: res.data.location,
@@ -134,7 +133,8 @@ const Calendar = () => {
   };
 
   // delete a trip
-  const handleDeleteTrip = () => {
+  handleDeleteTrip = () => {
+    const navigate = useNavigate();
     post("api/trip/delete-trip")
       .then(() => {
         localStorage.clear();
@@ -144,10 +144,11 @@ const Calendar = () => {
   };
 
   // update a trip
-  const handleUpdateTrip = (id) => {
-    // console.log(state);
+  handleUpdateTrip = (id) => {
+    const navigate = useNavigate();
+    // console.log(this.state);
     post("/api/trip/update-trip")
-      .update(id, state)
+      .update(id, this.state)
       .then((foundTrip) => {
         localStorage.setItem("trip", foundTrip.data);
         navigate("/view-calendar");
@@ -155,34 +156,31 @@ const Calendar = () => {
       .catch((err) => console.log(err));
   };
 
-  const handleInputChange = (event) => {
+  handleInputChange = (event) => {
     // Getting the value and name of the input which triggered the change
     let value = event.target.value;
     const name = event.target.name;
     // Updating the input's state
-    setState({
-      ...state,
+    this.setState({
       [name]: value,
     });
   };
 
   // toggleWeekends = () => {
-  //   setState({
-    // ...state,
+  //   this.setState({
   //     // update a property
-  //     calendarWeekends: !state.calendarWeekends,
+  //     calendarWeekends: !this.state.calendarWeekends,
   //   });
   // };
 
-  const gotoPast = () => {
-    let calendarApi = calendarComponentRef.current.getApi();
+  gotoPast = () => {
+    let calendarApi = this.calendarComponentRef.current.getApi();
     calendarApi.gotoDate("2000-01-01"); // call a method on the Calendar object
   };
 
   // close modal and clear input
-  const handleCloseClick = () => {
-    setState({
-      ...state,
+  handleCloseClick = () => {
+    this.setState({
       showModal: false,
       showCard: false,
       errorTitle: "",
@@ -194,9 +192,8 @@ const Calendar = () => {
   };
 
   // click calendar
-  const handleDateClick = () => {
-    setState({
-      ...state,
+  handleDateClick = () => {
+    this.setState({
       startDate: new Date(),
       showModal: true,
       title: "",
@@ -208,41 +205,37 @@ const Calendar = () => {
   };
 
   // guests list
-  const handleGuestsChange = (event) => {
+  handleGuestsChange = (event) => {
     //Can't do filter and map on HTMLCollections
     let asArr = Array.prototype.slice.call(event.target.options);
     let guestIds = asArr
       .filter((option) => option.selected)
       .map((option) => option.value);
 
-    setState({
-      ...state,
+    this.setState({
       guests: guestIds,
     });
   };
 
   // save a new trip
-  const handleSaveTrip = () => {
+  handleSaveTrip = () => {
     // const navigate = useNavigate();
     if (
-      state.title &&
-      state.start &&
-      state.end &&
-      state.description
+      this.state.title &&
+      this.state.start &&
+      this.state.end &&
+      this.state.description
     ) {
-      post("/api/trip/plan-trip", state)
-        // .saveTrip(state)
+      post("/api/trip/plan-trip", this.state)
+        // .saveTrip(this.state)
         .then(() => {
-          // refreshTrips();
-          setState({
-            ...state,
+          // this.refreshTrips();
+          this.setState({
             showModal: false,
           });
-          navigate("/view-calendar");
         })
         .catch((err) => console.log(err));
-      setState({
-        ...state,
+      this.setState({
         title: "",
         location: "",
         start: new Date().getUTCHours(),
@@ -256,63 +249,65 @@ const Calendar = () => {
         guests: [],
       });
     } else {
-      setState({
-        ...state,
+      this.setState({
         errorTitle: "*Please enter your trip name",
         errorLocation: "*Please enter your trip location",
         errorStart: "*Please enter the start date",
         errorEnd: "*Please enter the end date",
         errorDescription: "*Please enter the description",
       });
-     
+      // navigate("/view-calendar");
     }
   };
-
-  return (
-    <div className="demo-app">
-    <NavBar />
-      <TripForm
-        show={state.showModal}
-        {...state}
-        close={handleCloseClick}
-        save={() => handleSaveTrip()}
-        handleInputChange={handleInputChange}
-        handleGuestsChange={handleGuestsChange}
-      />
-      <TripCard
-        show={state.showCard}
-        {...state}
-        close={handleCloseClick}
-        delete={handleDeleteClick}
-        save={handleUpdateClick}
-        handleInputChange={handleInputChange}
-        handleGuestsChange={handleGuestsChange}
-      />
-      <div className="demo-app-top mb-4">
-        &nbsp;
-        <button onClick={gotoPast} className="btn btn-dark">
-          go to a date in the past
-        </button>
-        &nbsp; (also, click a date/time to add an event)
-      </div>
-      <div className="demo-app-calendar"  >
-        <FullCalendar
-          initialView="dayGridMonth"
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-          }}
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          ref={calendarComponentRef}
-          weekends={state.calendarWeekends}
-          events={state.eventSources}
-          dateClick={handleDateClick}
-          eventClick={handleEventClick}
+  render() {
+    return (
+      <div className="demo-app">
+        <TripForm
+          show={this.state.showModal}
+          {...this.state}
+          close={this.handleCloseClick}
+          save={() => this.handleSaveTrip()}
+          handleInputChange={this.handleInputChange}
+          handleGuestsChange={this.handleGuestsChange}
         />
+        <TripCard
+          show={this.state.showCard}
+          {...this.state}
+          close={this.handleCloseClick}
+          delete={this.handleDeleteClick}
+          save={this.handleUpdateClick}
+          handleInputChange={this.handleInputChange}
+          handleGuestsChange={this.handleGuestsChange}
+        />
+        <div className="demo-app-top mb-4">
+          <button onClick={this.toggleWeekends} className="btn btn-dark">
+            toggle weekends
+          </button>
+          &nbsp;
+          <button onClick={this.gotoPast} className="btn btn-dark">
+            go to a date in the past
+          </button>
+          &nbsp; (also, click a date/time to add an event)
+        </div>
+        <div className="demo-app-calendar">
+          <FullCalendar
+            initialView="dayGridMonth"
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+            }}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            ref={this.calendarComponentRef}
+            weekends={this.state.calendarWeekends}
+            events={this.state.eventSources}
+            dateClick={this.handleDateClick}
+            eventClick={this.handleEventClick}
+          />
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default Calendar;

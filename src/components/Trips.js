@@ -15,7 +15,7 @@ class Trips extends Component {
   }
 
   componentDidMount() {
-    get("/api/trip/view-calendar)").then((resp) => {
+    get("/api/trip/view-trip)").then((resp) => {
       let tripData = resp.data[0].trip;
 
       this.setState({ trips: tripData });
@@ -29,8 +29,7 @@ class Trips extends Component {
   };
 
   handleCalendarChange(didItChange) {
-    get("/api/trip/view-calendar)")
-    .then((resp) => {
+    post("/api/trip/view-trip)").then((resp) => {
       console.log(resp);
       let tripData = resp.data[0].trip;
 

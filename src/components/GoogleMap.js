@@ -90,17 +90,17 @@ export default function App() {
             },
           ]);
         }}
-        // onLoad={onMapLoad}
+        onLoad={onMapLoad}
       >
         {markers.map((marker) => (
           <Marker
             key={marker.time.toISOString()}
             position={{ lat: marker.lat, lng: marker.lng }}
             icon={{
+              url: null,
               scaledSize: new window.google.maps.Size(30, 30),
               origin: new window.google.maps.Point(0, 0),
               anchor: new window.google.maps.Point(15, 15),
-              url: null,
             }}
             onClick={() => {
               setSelected(marker);
