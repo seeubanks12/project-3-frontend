@@ -24,7 +24,7 @@ const EditUser = () => {
         username,
         email,
       },
-      { new: false }
+      { new: true }
     ).then((foundUser) => {
       console.log("We found this user", foundUser.data);
       localStorage.setItem("user", foundUser.data);
@@ -47,13 +47,37 @@ const EditUser = () => {
   return (
     <div>
       <NavBar />
-      <h2 style={{ paddingTop: 100 }}>Update Information</h2>
-      <form onSubmit={updateUser}>
-        <input value={username} onChange={(e) => setUsername(e.target.value)} />
-        <input value={email} onChange={(e) => setEmail(e.target.value)} />
-        <button type="submit">Update Information</button>
-      </form>
-      <button onClick={deleteUser}>Delete Account</button>
+      <div className="bg-danger" style={{ padding: "70px" }}>
+        <div className="wrapper">
+          <div className="text-center mt-4 name"> Update Information </div>
+          <form
+            className="p-3 mt-3"
+            onSubmit={updateUser}
+            style={{ paddingTop: 100 }}
+          >
+            <p className="text-center">Username</p>
+            <div className="form-field d-flex align-items-center">
+              {" "}
+              <span className="far fa-user"></span>{" "}
+              <input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <p className="text-center">Email</p>
+            <div className="form-field d-flex align-items-center">
+              {" "}
+              <span className="fas fa-key"></span>{" "}
+              <input value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>{" "}
+            <button className="btn mt-3" type="submit">
+              Update Information
+            </button>
+          </form>
+          <button className="btn mt-3" onClick={deleteUser}>Delete Account</button>
+          <div className="text-center fs-6"> </div>
+        </div>
+      </div>
     </div>
   );
 };

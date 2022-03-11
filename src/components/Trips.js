@@ -1,7 +1,7 @@
 import { get, post } from "../http/service";
 import React, { Component } from "react";
-// import Clock from "../clock";
-import Calender from "../../components/calendar";
+import Clock from "./Clock";
+import Calender from "./Calendar";
 
 class Trips extends Component {
   constructor(props) {
@@ -15,11 +15,16 @@ class Trips extends Component {
   }
 
   componentDidMount() {
-    get("/api/trip/view-trip)").then((resp) => {
-      let tripData = resp.data[0].trip;
+    get("/api/trip/view-trip")
+      .then((resp) => {
+        console.log(resp.data);
+        let tripData = resp.data[0].trip;
 
-      this.setState({ trips: tripData });
-    });
+        this.setState({ tripData });
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
   toggleTrip = () => {
@@ -29,14 +34,18 @@ class Trips extends Component {
   };
 
   handleCalendarChange(didItChange) {
-    post("/api/trip/view-trip)").then((resp) => {
-      console.log(resp);
-      let tripData = resp.data[0].trip;
+    post("/api/trip/view-trip")
+      .then((resp) => {
+        console.log(resp);
+        let tripData = resp.data[0].trip;
 
-      this.setState({
-        trips: tripData,
+        this.setState({
+          trips: tripData,
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
       });
-    });
   }
 
   render() {
@@ -62,7 +71,7 @@ class Trips extends Component {
                   <div id="a-trip">
                     <div className="card-body">
                       Guests: {trip.guests} <br />
-                      {/* Trip Start: <Clock deadline={trip.start} /> <br /> */}
+                      Trip Start: <Clock deadline={trip.start} /> <br />
                       Description: {trip.description}
                     </div>
                   </div>

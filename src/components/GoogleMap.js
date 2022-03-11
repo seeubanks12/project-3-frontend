@@ -31,23 +31,45 @@ export default function App() {
   });
   const [markers, setMarkers] = React.useState([]);
   const [selected, setSelected] = React.useState(null);
-  const [newPlace, setNewPlace] = React.useState(null);
+  // const [newPlace, setNewPlace] = React.useState(null);
   // const [currentUsername, setCurrentUsername] = React.useState(myStorage.getItem("user"));
-  // const [title, setTitle] = React.useState(null);
-  // const [desc, setDesc] = React.useState(null);
-  // const [star, setStar] = React.useState(0);
+  const [title, setTitle] = React.useState("");
+  const [desc, setDesc] = React.useState("");
+  const [location, setLocation] = React.useState("");
+  const [rating, setRating] = React.useState(0);
+  const [id, setId] = React.useState("");
 
-  const onMapClick = React.useCallback((event) => {
-    console.log("here");
-    setMarkers((current) => [
-      ...current,
-      {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
-        time: new Date(),
-      },
-    ]);
+  React.useEffect(() => {
+    getPins();
   }, []);
+
+  const getPins = () => {
+    get("/api/pin/view-all")
+      .then((allPins) => {
+        console.log(allPins.data);
+        setMarkers(allPins.data);
+        // setTitle(allPins.data.title);
+        // setDesc(allPins.data.desc);
+        // setRating(allPins.data.rating);
+        // setLat(allPins.data.lat);
+        // setLng(allPins.data.lng);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  // const onMapClick = React.useCallback((event) => {
+  //   console.log("here");
+  //   setMarkers((current) => [
+  //     ...current,
+  //     {
+  //       lat: event.latLng.lat(),
+  //       lng: event.latLng.lng(),
+  //       time: new Date(),
+  //     },
+  //   ]);
+  // }, []);
 
   const mapRef = React.useRef();
   const onMapLoad = React.useCallback((map) => {
@@ -72,6 +94,29 @@ export default function App() {
   //   });
   // };
 
+  //add new pin
+  const savePin = (e) => {
+    e.preventDefault();
+    let url = id ? `edit-pin/${id}` : "add-pin";
+    console.log("URL", url);
+    console.log("markers", markers[0]);
+    post(`/api/pin/${url}`, {
+      title: title,
+      description: desc,
+      rating: rating,
+      lat: markers[0].lat,
+      lng: markers[0].lng,
+    })
+      .then((pinCreated) => {
+        getPins();
+        setSelected(null);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  console.log(markers);
   return (
     <div>
       <NavBar />
@@ -94,7 +139,7 @@ export default function App() {
       >
         {markers.map((marker) => (
           <Marker
-            key={marker.time.toISOString()}
+            key={marker.time?.toISOString()}
             position={{ lat: marker.lat, lng: marker.lng }}
             icon={{
               url: null,
@@ -103,7 +148,12 @@ export default function App() {
               anchor: new window.google.maps.Point(15, 15),
             }}
             onClick={() => {
+              console.log(marker);
               setSelected(marker);
+              setTitle(marker.title);
+              setDesc(marker.description);
+              setRating(marker.rating);
+              setId(marker._id);
             }}
           />
         ))}
@@ -115,23 +165,30 @@ export default function App() {
               setSelected(null);
             }}
           >
-            <div>
-              <p>Title</p>
-              <p>Description</p>
-              <p>Location</p>
-              <p>Dates</p>
-            </div>
+            <form onSubmit={savePin}>
+            <h6>Add Destination Information</h6>
+              <input
+                value={title}
+                placeholder="Location"
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <input
+                value={desc}
+                placeholder="Description"
+                onChange={(e) => setDesc(e.target.value)}
+              />
+              <input
+                value={rating}
+                type="number"
+                placeholder="Rating"
+                onChange={(e) => setRating(e.target.value)}
+              />
+
+              <button type="submit">Submit</button>
+            </form>
           </InfoWindow>
         ) : null}
       </GoogleMap>
     </div>
   );
 }
-
-// const Pin = () => {
-//   const [username, setUsername] = React.useState("");
-//   const [title, setTitle] = React.useState("");
-//   const [description, setDescription] = React.useState("");
-//   const [rating, setRating] = React.useState("");
-//   const [lat, setLat] = React.useState("");
-//   const [long, setLong] = React.useState("");

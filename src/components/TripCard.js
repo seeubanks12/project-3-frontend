@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
-// import Clock from "../clock";
-// import moment from "moment";
+import Clock from "./Clock";
+import moment from "moment";
 
 export default function TripCard(props) {
   function userDropdowns(users, guests) {
@@ -28,7 +28,7 @@ export default function TripCard(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form autocomplete="off">
+          <form autoComplete="off">
             <div className="form-group">
               <label htmlFor="title">Trip Name</label>
               <input
@@ -112,7 +112,7 @@ export default function TripCard(props) {
               <p className="error">{props.errorDescription}</p>
             </div>
           </form>
-          {/* <div>
+          <div>
             {moment(props.start).isSameOrAfter(moment()) && (
               <h4>
                 <i className="far fa-clock"></i> Trip Start
@@ -122,7 +122,7 @@ export default function TripCard(props) {
             {moment(props.start).isSameOrAfter(moment()) && (
               <Clock deadline={props.start} />
             )}
-          </div> */}
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button
