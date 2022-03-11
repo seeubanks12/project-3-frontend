@@ -61,6 +61,7 @@ const Login = () => {
               <span className="fas fa-key"></span>{" "}
               <input
                 value={password}
+                type="password"
                 placeholder="password"
                 onChange={(e) => setPassword(e.target.value)}
               />{" "}
